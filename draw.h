@@ -22,6 +22,9 @@ void add_box( struct matrix * edges,
 void add_sphere( struct matrix * edges,
                  double cx, double cy, double cz,
                  double r, int step );
+void add_squarepyramid(struct matrix * polygons, double x, double y, double z, double height, double side);
+void add_tetrahedron(struct matrix * polygons, double x, double y, double z, double s);
+void add_octahedron(struct matrix * polygons, double x, double y, double z, double r);
 struct matrix * generate_sphere(double cx, double cy, double cz,
                                 double r, int step );
 void add_torus( struct matrix * edges,
