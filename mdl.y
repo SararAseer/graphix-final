@@ -50,13 +50,38 @@ TETRAHEDRON DOUBLE DOUBLE DOUBLE DOUBLE
 {
   lineno++;
   op[lastop].opcode = TETRAHEDRON;
-  op[lastop].op.tetrahedron.d[0] = 
+  op[lastop].op.tetrahedron.d[0] = $2;
+  op[lastop].op.tetrahedron.d[1] = $3;
+  op[lastop].op.tetrahedron.d[2] = $4;
+  op[lastop].op.tetrahedron.d[3] = 0;
+  op[lastop].op.tetrahedron.s = $5;
+  lastop++;
+}|
 
+SQUARE_PYRAMID DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
+{
+  lineno++;
+  op[lastop].opcode = SQUARE_PYRAMID;
+  op[lastop].op.square_pyramid.d[0] = $2;
+  op[lastop].op.square_pyramid.d[1] = $3;
+  op[lastop].op.square_pyramid.d[2] = $4;
+  op[lastop].op.square_pyramid.d[3] = 0;
+  op[lastop].op.square_pyramid.h = $5;
+  op[lastop].op.square_pyramid.s = $6;
+  lastop++;
+}|
 
-
-
-
-
+OCTAHEDRON DOUBLE DOUBLE DOUBLE DOUBLE
+{
+  lineno++;
+  op[lastop].opcode = OCTAHEDRON;
+  op[lastop].op.octahedron.d[0] = $2;
+  op[lastop].op.octahedron.d[1] = $3;
+  op[lastop].op.octahedron.d[2] = $4;
+  op[lastop].op.octahedron.d[3] = 0;
+  op[lastop].op.octahedron.s = $5;
+  lastop++;
+}|
 
 
 SPHERE DOUBLE DOUBLE DOUBLE DOUBLE
