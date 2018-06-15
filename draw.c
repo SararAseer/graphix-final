@@ -240,6 +240,72 @@ void add_box( struct matrix * polygons,
   add_polygon(polygons, x, y1, z, x, y1, z1, x1, y1, z1);
 }//end add_box
 
+void add_squarepyramid(struct matrix * polygons, double x, double y, double z, double height, double side){
+	double x1, y1, z1, x2, z2;
+	x1 = x + height / 2;
+	x2 = x - height / 2;
+	y1 = y - height;
+	z1 = z + height / 2;
+	z2 = z - height / 2;
+	
+	add_polygon(polygons, x,y,z, x2, y1, z2, x1, y1, z2);
+	add_polygon(polygons, x,y,z, x1, y1, z2, x1, y1, z1);
+	add_polygon(polygons, x,y,z, x1, y1, z1, x2, y1, z1);
+	add_polygon(polygons, x,y,z, x2, y1, z1, x2, y1, z2);
+	
+	add_polygon(polygons, x2,y1,z2, x1, y1, z1, x1, y1, z2);
+	add_polygon(polygons, x2,y1,z2, x2, y1, z1, x1, y1, z1);
+}
+
+void add_tetrahedron(struct matrix * polygons, double x, double y, double z, double s) {
+  double x1, y1, z1, x2, y2, z2, x3, y3, z3;
+  y1 = y - sqrt(6)/3 * s;
+  y2 = y1;
+  y3 = y1;
+  x1 = x;
+  z1 = z + sqrt(3)/3 * s;
+  x2 = x - s/2;
+  x3 = x + s/2;
+  z2 = z - sqrt(3)/6 * s;
+  z3 = z2;
+  
+  add_polygon(polygons, x, y, z, x2, y2, z2, x3, y3, z3);
+  add_polygon(polygons, x1, y1, z1, x3, y3, z3, x2, y2, z2);
+  add_polygon(polygons, x, y, z, x3, y3, z3, x1, y1, z1);
+  add_polygon(polygons, x, y, z, x1, y1, z1, x2, y2, z2);
+}
+
+void add_octahedron(struct matrix * polygons, double x, double y, double z, double r) {
+  double x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4, x5, y5, z5, x6, y6, z6;
+  x1 = x;
+  y1 = y + r;
+  z1 = z;
+  x2 = x;
+  y2 = y - r;
+  z2 = z;
+  x3 = x;
+  y3 = y;
+  z3 = z + r;
+  x5 = x;
+  y5 = y;
+  z5 = z - r;
+  x4 = x + r;
+  y4 = y;
+  z4 = z;
+  x6 = x - r;
+  y6 = y;
+  z6 = z;
+  
+  add_polygon(polygons, x1, y1, z1, x5, y5, z5, x4, y4, z4);
+  add_polygon(polygons, x1, y1, z1, x6, y6, z6, x5, y5, z5);
+  add_polygon(polygons, x1, y1, z1, x3, y3, z3, x6, y6, z6);
+  add_polygon(polygons, x1, y1, z1, x4, y4, z4, x3, y3, z3);
+  add_polygon(polygons, x2, y2, z2, x4, y4, z4, x5, y5, z5);
+  add_polygon(polygons, x2, y2, z2, x5, y5, z5, x6, y6, z6);
+  add_polygon(polygons, x2, y2, z2, x6, y6, z6, x3, y3, z3);
+  add_polygon(polygons, x2, y2, z2, x3, y3, z3, x4, y4, z4);
+}
+
 /*======== void add_sphere() ==========
   Inputs:   struct matrix * points
   double cx
@@ -455,6 +521,8 @@ struct matrix * generate_torus( double cx, double cy, double cz,
   }
   return points;
 }
+
+
 
 /*======== void add_circle() ==========
   Inputs:   struct matrix * points
