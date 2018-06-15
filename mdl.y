@@ -29,7 +29,7 @@
 %token <val> DOUBLE
 %token <string> LIGHT AMBIENT
 %token <string> CONSTANTS SAVE_COORDS CAMERA
-%token <string> SPHERE TORUS BOX LINE CS MESH TEXTURE
+%token <string> SPHERE TORUS BOX TETRAHEDRON OCTAHEDRON SQUARE_PYRAMID LINE CS MESH TEXTURE
 %token <string> STRING
 %token <string> SET MOVE SCALE ROTATE BASENAME SAVE_KNOBS TWEEN FRAMES VARY
 %token <string> PUSH POP SAVE GENERATE_RAYFILES
@@ -45,6 +45,19 @@ input:
 command:
 
 COMMENT {}|
+
+TETRAHEDRON DOUBLE DOUBLE DOUBLE DOUBLE
+{
+  lineno++;
+  op[lastop].opcode = TETRAHEDRON;
+  op[lastop].op.tetrahedron.d[0] = 
+
+
+
+
+
+
+
 
 SPHERE DOUBLE DOUBLE DOUBLE DOUBLE
 {
