@@ -63,16 +63,19 @@ struct command
       SYMTAB *cs;
     } box;
     struct {
+      SYMTAB *constants;
       double d[4];
       double s;
       SYMTAB *cs;
     } tetrahedron;
     struct {
+      SYMTAB *constants;
       double d[4];
       double s;
       SYMTAB *cs;
     } octahedron;
     struct {
+      SYMTAB *constants;
       double d[4];
       double h;
       double s;
