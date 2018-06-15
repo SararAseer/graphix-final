@@ -385,6 +385,30 @@ void my_main() {
                       areflect, dreflect, sreflect);
         tmp->lastcol = 0;
         break;
+		    
+      case TETRAHEDRON:
+	add_tetrahedron(tmp, op[i].op.tetrahedron.d[0], op[i].op.tetrahedron.d[1], op[i].op.tetrahedron.d[2], op[i].op.tetrahedron.s);
+	matrix_mult( peek(systems), tmp);
+	draw_polygons(tmp, t, zb, view, light, ambient, areflect, dreflect, sreflect);
+	tmp->lastcol = 0;
+	break;
+	
+		    
+      case OCTAHEDRON:
+	add_octahedron(tmp, op[i].op.octahedron.d[0], op[i].op.octahedron.d[1], op[i].op.octahedron.d[2], op[i].op.octahedron.s);
+	matrix_mult( peek(systems), tmp);
+	draw_polygons(tmp, t, zb, view, light, ambient, areflect, dreflect, sreflect);
+	tmp->lastcol = 0;
+	break;
+		 
+      case SQUARE_PYRAMID:
+	add_squarepyramid(tmp, op[i].op.square_pyramid.d[0], op[i].op.square_pyramid.d[1], op[i].op.square_pyramid.d[2], op[i].op.square_pyramid.h, op[i].op.square_pyramid.s);
+	matrix_mult( peek(systems), tmp);
+	draw_polygons(tmp, t, zb, view, light, ambient, areflect, dreflect, sreflect);
+	tmp->lastcol = 0;
+	break;	    
+		    
+		    
       case LINE:
         /* printf("Line: from: %6.2f %6.2f %6.2f to: %6.2f %6.2f %6.2f",*/
         /* 	 op[i].op.line.p0[0],op[i].op.line.p0[1], */
