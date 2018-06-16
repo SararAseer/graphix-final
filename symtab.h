@@ -9,22 +9,19 @@
 #define SYM_FILE   5
 #define SYM_STRING 5
 
-struct constants
-{
+struct constants {
   double r[4];
   double g[4];
   double b[4];
-  double red,green,blue;
+  double red, green, blue;
 };
 
-struct light
-{
+struct light {
   double l[4];
   double c[4];
 };
 
-typedef struct
-{
+typedef struct {
   char *name;
   int type;
   union{

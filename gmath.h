@@ -4,7 +4,7 @@
 #include "matrix.h"
 #include "ml6.h"
 
-#define AMBIENT_C 0
+#define AMBIENT 0
 #define DIFFUSE 1
 #define SPECULAR 2
 #define LOCATION 0

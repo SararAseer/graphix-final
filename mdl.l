@@ -3,6 +3,8 @@
 #include "y.tab.h"
 %}
 
+%option noinput
+%option nounput
 
 ID [a-zA-Z][a-zA-Z0-9_]*
 
@@ -26,9 +28,6 @@ ID [a-zA-Z][a-zA-Z0-9_]*
 "torus" { return TORUS;}
 "sphere" { return SPHERE;}
 "box" {return BOX;}
-"square_pyramid" {return SQUARE_PYRAMID;}
-"tetrahedron" {return TETRAHEDRON;}
-"octahedron" {return OCTAHEDRON;}
 "line" {return LINE;}
 "mesh" {return MESH;}
 "texture" {return TEXTURE;}
@@ -45,6 +44,7 @@ ID [a-zA-Z][a-zA-Z0-9_]*
 
 "push" {return PUSH;}
 "pop" {return POP;}
+"clear" {return CLEAR;}
 "save" {return SAVE;}
 "generate_rayfiles" {return GENERATE_RAYFILES;}
 
