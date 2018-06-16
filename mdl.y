@@ -15,13 +15,6 @@
   struct matrix *m;
   int lastop=0;
   int lineno=0;
-
-#if YYBISON
-  union YYSTYPE;
-  int yylex();
-  int yyerror(const char *s);
-#endif
-
   %}
 
 
@@ -30,30 +23,68 @@
 %union{
   double val;
   char string[255];
- }
+}
 
 %token COMMENT
-  %token <val> DOUBLE
-  %token <string> LIGHT AMBIENT
-  %token <string> CONSTANTS SAVE_COORDS CAMERA
-  %token <string> SPHERE TORUS BOX LINE CS MESH TEXTURE
-  %token <string> STRING
-  %token <string> SET MOVE SCALE ROTATE BASENAME SAVE_KNOBS TWEEN FRAMES VARY
-  %token <string> PUSH POP CLEAR SAVE GENERATE_RAYFILES
-  %token <string> SHADING SHADING_TYPE SETKNOBS FOCAL DISPLAY WEB
-  %token <string> CO
-  %%
- /* Grammar rules */
+%token <val> DOUBLE
+%token <string> LIGHT AMBIENT
+%token <string> CONSTANTS SAVE_COORDS CAMERA
+%token <string> SPHERE TORUS BOX TETRAHEDRON OCTAHEDRON SQUARE_PYRAMID LINE CS MESH TEXTURE
+%token <string> STRING
+%token <string> SET MOVE SCALE ROTATE BASENAME SAVE_KNOBS TWEEN FRAMES VARY
+%token <string> PUSH POP SAVE GENERATE_RAYFILES
+%token <string> SHADING SHADING_TYPE SETKNOBS FOCAL DISPLAY WEB
+%token <string> CO
+%%
+/* Grammar rules */
 
-  input:
+input:
 | input command
-  ;
+;
 
 command:
 
 COMMENT {}|
 
-  SPHERE DOUBLE DOUBLE DOUBLE DOUBLE
+TETRAHEDRON DOUBLE DOUBLE DOUBLE DOUBLE
+{
+  lineno++;
+  op[lastop].opcode = TETRAHEDRON;
+  op[lastop].op.tetrahedron.d[0] = $2;
+  op[lastop].op.tetrahedron.d[1] = $3;
+  op[lastop].op.tetrahedron.d[2] = $4;
+  op[lastop].op.tetrahedron.d[3] = 0;
+  op[lastop].op.tetrahedron.s = $5;
+  lastop++;
+}|
+
+SQUARE_PYRAMID DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
+{
+  lineno++;
+  op[lastop].opcode = SQUARE_PYRAMID;
+  op[lastop].op.square_pyramid.d[0] = $2;
+  op[lastop].op.square_pyramid.d[1] = $3;
+  op[lastop].op.square_pyramid.d[2] = $4;
+  op[lastop].op.square_pyramid.d[3] = 0;
+  op[lastop].op.square_pyramid.h = $5;
+  op[lastop].op.square_pyramid.s = $6;
+  lastop++;
+}|
+
+OCTAHEDRON DOUBLE DOUBLE DOUBLE DOUBLE
+{
+  lineno++;
+  op[lastop].opcode = OCTAHEDRON;
+  op[lastop].op.octahedron.d[0] = $2;
+  op[lastop].op.octahedron.d[1] = $3;
+  op[lastop].op.octahedron.d[2] = $4;
+  op[lastop].op.octahedron.d[3] = 0;
+  op[lastop].op.octahedron.s = $5;
+  lastop++;
+}|
+
+
+SPHERE DOUBLE DOUBLE DOUBLE DOUBLE
 {
   lineno++;
   op[lastop].opcode = SPHERE;
@@ -66,7 +97,7 @@ COMMENT {}|
   op[lastop].op.sphere.cs = NULL;
   lastop++;
 }|
-  SPHERE DOUBLE DOUBLE DOUBLE DOUBLE STRING
+SPHERE DOUBLE DOUBLE DOUBLE DOUBLE STRING
 {
   lineno++;
   op[lastop].opcode = SPHERE;
@@ -80,7 +111,7 @@ COMMENT {}|
   op[lastop].op.sphere.cs = add_symbol($6,SYM_MATRIX,m);
   lastop++;
 }|
-  SPHERE STRING DOUBLE DOUBLE DOUBLE DOUBLE
+SPHERE STRING DOUBLE DOUBLE DOUBLE DOUBLE
 {
   lineno++;
   op[lastop].opcode = SPHERE;
@@ -94,7 +125,7 @@ COMMENT {}|
   op[lastop].op.sphere.constants = add_symbol($2,SYM_CONSTANTS,c);
   lastop++;
 }|
-  SPHERE STRING DOUBLE DOUBLE DOUBLE DOUBLE STRING
+SPHERE STRING DOUBLE DOUBLE DOUBLE DOUBLE STRING
 {
   lineno++;
   op[lastop].opcode = SPHERE;
@@ -111,7 +142,7 @@ COMMENT {}|
   lastop++;
 }|
 
-  TORUS DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
+TORUS DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
 {
   lineno++;
   op[lastop].opcode = TORUS;
@@ -126,7 +157,7 @@ COMMENT {}|
 
   lastop++;
 }|
-  TORUS DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE STRING
+TORUS DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE STRING
 {
   lineno++;
   op[lastop].opcode = TORUS;
@@ -141,7 +172,7 @@ COMMENT {}|
   op[lastop].op.torus.cs = add_symbol($7,SYM_MATRIX,m);
   lastop++;
 }|
-  TORUS STRING DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
+TORUS STRING DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
 {
   lineno++;
   op[lastop].opcode = TORUS;
@@ -157,7 +188,7 @@ COMMENT {}|
 
   lastop++;
 }|
-  TORUS STRING DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE STRING
+TORUS STRING DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE STRING
 {
   lineno++;
   op[lastop].opcode = TORUS;
@@ -175,7 +206,7 @@ COMMENT {}|
   lastop++;
 }|
 
-  BOX DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
+BOX DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
 {
   lineno++;
   op[lastop].opcode = BOX;
@@ -192,7 +223,7 @@ COMMENT {}|
   op[lastop].op.box.cs = NULL;
   lastop++;
 }|
-  BOX DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE STRING
+BOX DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE STRING
 {
   lineno++;
   op[lastop].opcode = BOX;
@@ -210,7 +241,7 @@ COMMENT {}|
   op[lastop].op.box.cs = add_symbol($8,SYM_MATRIX,m);
   lastop++;
 }|
-  BOX STRING DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
+BOX STRING DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
 {
   lineno++;
   op[lastop].opcode = BOX;
@@ -227,7 +258,7 @@ COMMENT {}|
   op[lastop].op.box.cs = NULL;
   lastop++;
 }|
-  BOX STRING DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE STRING
+BOX STRING DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE STRING
 {
   lineno++;
   op[lastop].opcode = BOX;
@@ -247,7 +278,7 @@ COMMENT {}|
   lastop++;
 }|
 
-  LINE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
+LINE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
 {
   lineno++;
   op[lastop].opcode = LINE;
@@ -264,8 +295,8 @@ COMMENT {}|
   op[lastop].op.line.cs1 = NULL;
   lastop++;
 }|
-  /* first do cs0, then cs1, then both - BUT NO CONSTANTS */
-  LINE DOUBLE DOUBLE DOUBLE STRING DOUBLE DOUBLE DOUBLE
+/* first do cs0, then cs1, then both - BUT NO CONSTANTS */
+LINE DOUBLE DOUBLE DOUBLE STRING DOUBLE DOUBLE DOUBLE
 {
   lineno++;
   op[lastop].opcode = LINE;
@@ -283,7 +314,7 @@ COMMENT {}|
   op[lastop].op.line.cs1 = NULL;
   lastop++;
 }|
-  LINE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE STRING
+LINE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE STRING
 {
   lineno++;
   op[lastop].opcode = LINE;
@@ -301,7 +332,7 @@ COMMENT {}|
   op[lastop].op.line.cs1 = add_symbol($8,SYM_MATRIX,m);
   lastop++;
 }|
-  LINE DOUBLE DOUBLE DOUBLE STRING DOUBLE DOUBLE DOUBLE STRING
+LINE DOUBLE DOUBLE DOUBLE STRING DOUBLE DOUBLE DOUBLE STRING
 {
   lineno++;
   op[lastop].opcode = LINE;
@@ -320,8 +351,8 @@ COMMENT {}|
   op[lastop].op.line.cs1 = add_symbol($9,SYM_MATRIX,m);
   lastop++;
 }|
-  /* now do constants, and constants with the cs stuff */
-  LINE STRING DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
+/* now do constants, and constants with the cs stuff */
+LINE STRING DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
 {
   lineno++;
   op[lastop].opcode = LINE;
@@ -339,7 +370,7 @@ COMMENT {}|
   op[lastop].op.line.cs1 = NULL;
   lastop++;
 }|
-  LINE STRING DOUBLE DOUBLE DOUBLE STRING DOUBLE DOUBLE DOUBLE
+LINE STRING DOUBLE DOUBLE DOUBLE STRING DOUBLE DOUBLE DOUBLE
 {
   lineno++;
   op[lastop].opcode = LINE;
@@ -358,7 +389,7 @@ COMMENT {}|
   op[lastop].op.line.cs1 = NULL;
   lastop++;
 }|
-  LINE STRING DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE STRING
+LINE STRING DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE STRING
 {
   lineno++;
   op[lastop].opcode = LINE;
@@ -378,7 +409,7 @@ COMMENT {}|
   op[lastop].op.line.cs0 = NULL;
   lastop++;
 }|
-  LINE STRING DOUBLE DOUBLE DOUBLE STRING DOUBLE DOUBLE DOUBLE STRING
+LINE STRING DOUBLE DOUBLE DOUBLE STRING DOUBLE DOUBLE DOUBLE STRING
 {
   lineno++;
   op[lastop].opcode = LINE;
@@ -399,7 +430,7 @@ COMMENT {}|
   lastop++;
 }|
 
-  MESH CO STRING
+MESH CO STRING
 {
   lineno++;
   op[lastop].opcode = MESH;
@@ -408,7 +439,7 @@ COMMENT {}|
   op[lastop].op.mesh.cs = NULL;
   lastop++;
 }|
-  MESH STRING CO STRING
+MESH STRING CO STRING
 { /* name and constants */
   lineno++;
   op[lastop].opcode = MESH;
@@ -418,7 +449,7 @@ COMMENT {}|
   op[lastop].op.mesh.cs = NULL;
   lastop++;
 } |
-  MESH STRING CO STRING STRING
+MESH STRING CO STRING STRING
 {
   lineno++;
   op[lastop].opcode = MESH;
@@ -430,7 +461,7 @@ COMMENT {}|
   lastop++;
 } |
 
-  MOVE DOUBLE DOUBLE DOUBLE STRING
+MOVE DOUBLE DOUBLE DOUBLE STRING
 {
   lineno++;
   op[lastop].opcode = MOVE;
@@ -441,7 +472,7 @@ COMMENT {}|
   op[lastop].op.move.p = add_symbol($5,SYM_VALUE,0);
   lastop++;
 }|
-  MOVE DOUBLE DOUBLE DOUBLE
+MOVE DOUBLE DOUBLE DOUBLE
 {
   lineno++;
   op[lastop].opcode = MOVE;
@@ -453,7 +484,7 @@ COMMENT {}|
   lastop++;
 }|
 
-  SCALE DOUBLE DOUBLE DOUBLE STRING
+SCALE DOUBLE DOUBLE DOUBLE STRING
 {
   lineno++;
   op[lastop].opcode = SCALE;
@@ -464,7 +495,7 @@ COMMENT {}|
   op[lastop].op.scale.p = add_symbol($5,SYM_VALUE,0);
   lastop++;
 }|
-  SCALE DOUBLE DOUBLE DOUBLE
+SCALE DOUBLE DOUBLE DOUBLE
 {
   lineno++;
   op[lastop].opcode = SCALE;
@@ -475,7 +506,7 @@ COMMENT {}|
   op[lastop].op.scale.p = NULL;
   lastop++;
 }|
-  ROTATE STRING DOUBLE STRING
+ROTATE STRING DOUBLE STRING
 {
   lineno++;
   op[lastop].opcode = ROTATE;
@@ -499,7 +530,7 @@ COMMENT {}|
   op[lastop].op.rotate.p = add_symbol($4,SYM_VALUE,0);
   lastop++;
 }|
-  ROTATE STRING DOUBLE
+ROTATE STRING DOUBLE
 {
   lineno++;
   op[lastop].opcode = ROTATE;
@@ -523,35 +554,28 @@ COMMENT {}|
   lastop++;
 }|
 
-  PUSH
+PUSH
 {
   lineno++;
   op[lastop].opcode = PUSH;
   lastop++;
 }|
 
-  POP
+POP
 {
   lineno++;
   op[lastop].opcode = POP;
   lastop++;
 }|
 
-  CLEAR
-{
-  lineno++;
-  op[lastop].opcode = CLEAR;
-  lastop++;
-}|
-
-  DISPLAY
+DISPLAY
 {
   lineno++;
   op[lastop].opcode = DISPLAY;
   lastop++;
 }|
 
-  SAVE STRING
+SAVE STRING
 {
   lineno++;
   op[lastop].opcode = SAVE;
@@ -559,7 +583,7 @@ COMMENT {}|
   lastop++;
 }|
 
-  LIGHT STRING DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
+LIGHT STRING DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
 {
   lineno++;
   l = (struct light *)malloc(sizeof(struct light));
@@ -579,7 +603,7 @@ COMMENT {}|
   lastop++;
 }|
 
-  CONSTANTS STRING DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
+CONSTANTS STRING DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
 {
   lineno++;
   c = (struct constants *)malloc(sizeof(struct constants));
@@ -607,7 +631,7 @@ COMMENT {}|
   lastop++;
 }|
 
-  CONSTANTS STRING DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
+CONSTANTS STRING DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
 {
   lineno++;
   c = (struct constants *)malloc(sizeof(struct constants));
@@ -634,7 +658,7 @@ COMMENT {}|
   lastop++;
 }|
 
-  SAVE_COORDS STRING
+SAVE_COORDS STRING
 {
   lineno++;
   op[lastop].opcode = SAVE_COORDS;
@@ -643,7 +667,7 @@ COMMENT {}|
   lastop++;
 }|
 
-  CAMERA DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
+CAMERA DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
 {
   lineno++;
   op[lastop].opcode = CAMERA;
@@ -658,7 +682,7 @@ COMMENT {}|
   lastop++;
 }|
 
-  TEXTURE STRING DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
+TEXTURE STRING DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
 {
   lineno++;
   op[lastop].opcode = TEXTURE;
@@ -681,7 +705,7 @@ COMMENT {}|
   lastop++;
 }|
 
-  SET STRING DOUBLE
+SET STRING DOUBLE
 {
   lineno++;
   op[lastop].opcode = SET;
@@ -691,14 +715,14 @@ COMMENT {}|
   lastop++;
 }|
 
-  BASENAME STRING
+BASENAME STRING
 {
   lineno++;
   op[lastop].opcode = BASENAME;
   op[lastop].op.basename.p = add_symbol($2,SYM_STRING,0);
   lastop++;
 }|
-  SAVE_KNOBS STRING
+SAVE_KNOBS STRING
 {
   lineno++;
   op[lastop].opcode = SAVE_KNOBS;
@@ -706,7 +730,7 @@ COMMENT {}|
   lastop++;
 }|
 
-  TWEEN DOUBLE DOUBLE STRING STRING
+TWEEN DOUBLE DOUBLE STRING STRING
 {
   lineno++;
   op[lastop].opcode = TWEEN;
@@ -717,7 +741,7 @@ COMMENT {}|
   lastop++;
 }|
 
-  FRAMES DOUBLE
+FRAMES DOUBLE
 {
   lineno++;
   op[lastop].opcode = FRAMES;
@@ -725,7 +749,7 @@ COMMENT {}|
   lastop++;
 }|
 
-  VARY STRING DOUBLE DOUBLE DOUBLE DOUBLE
+VARY STRING DOUBLE DOUBLE DOUBLE DOUBLE
 {
   lineno++;
   op[lastop].opcode = VARY;
@@ -737,21 +761,21 @@ COMMENT {}|
   lastop++;
 }|
 
-  SHADING SHADING_TYPE
+SHADING SHADING_TYPE
 {
   lineno++;
   op[lastop].opcode = SHADING;
   op[lastop].op.shading.p = add_symbol($2,SYM_STRING,0);
   lastop++;
 }|
-  SETKNOBS DOUBLE
+SETKNOBS DOUBLE
 {
   lineno++;
   op[lastop].opcode = SETKNOBS;
   op[lastop].op.setknobs.value = $2;
   lastop++;
 }|
-  FOCAL DOUBLE
+FOCAL DOUBLE
 {
   lineno++;
   op[lastop].opcode = FOCAL;
@@ -759,13 +783,13 @@ COMMENT {}|
   lastop++;
 }|
 
-  WEB
+WEB
 {
   lineno++;
   op[lastop].opcode = WEB;
   lastop++;
 }|
-  AMBIENT DOUBLE DOUBLE DOUBLE
+AMBIENT DOUBLE DOUBLE DOUBLE
 {
   lineno++;
   op[lastop].opcode = AMBIENT;
@@ -775,7 +799,7 @@ COMMENT {}|
   lastop++;
 }|
 
-  GENERATE_RAYFILES
+GENERATE_RAYFILES
 {
   lineno++;
   op[lastop].opcode = GENERATE_RAYFILES;
@@ -784,24 +808,32 @@ COMMENT {}|
 %%
 
 
-  /* Other C stuff */
-  int yyerror(const char *s) {
-    printf("Error in line %d:%s\n",lineno,s);
-    return 0;
-  }
+/* Other C stuff */
+int yyerror(char *s)
+{
+  printf("Error in line %d:%s\n",lineno,s);
+  return 0;
+}
 
-int yywrap() {
+int yywrap()
+{
   return 1;
 }
 
-int yylex(YYSTYPE *, void *);
 
 extern FILE *yyin;
 
+
 int main(int argc, char **argv) {
+
   yyin = fopen(argv[1],"r");
+
   yyparse();
+  //COMMENT OUT PRINT_PCODE AND UNCOMMENT
+  //MY_MAIN IN ORDER TO RUN YOUR CODE
+
+  //print_pcode();
   my_main();
-  fclose(yyin);
+
   return 0;
 }

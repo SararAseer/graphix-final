@@ -13,9 +13,11 @@ extern int lastop;
 #define Ks 2
 
 
-struct command {
+struct command
+{
   int opcode;
-  union {
+  union
+  {
     struct {
       SYMTAB *p;
       double c[4];
@@ -25,6 +27,8 @@ struct command {
     } ambient;
     struct {
       SYMTAB *p;
+      /* each triple holds ka kd and ks for red green and blue
+	 respectively */
     } constants;
     struct {
       SYMTAB *p;
@@ -60,13 +64,32 @@ struct command {
     } box;
     struct {
       SYMTAB *constants;
+      double d[4];
+      double s;
+      SYMTAB *cs;
+    } tetrahedron;
+    struct {
+      SYMTAB *constants;
+      double d[4];
+      double s;
+      SYMTAB *cs;
+    } octahedron;
+    struct {
+      SYMTAB *constants;
+      double d[4];
+      double h;
+      double s;
+      SYMTAB *cs;
+    } square_pyramid;
+    struct {
+      SYMTAB *constants;
       double p0[4],p1[4];
       SYMTAB *cs0,*cs1;
     } line;
     struct {
       SYMTAB *constants;
       char name[255];
-      SYMTAB *cs;
+      SYMTAB *cs; 
     } mesh;
     struct {
       SYMTAB *p;
@@ -112,29 +135,37 @@ struct command {
     struct {
       double value;
     } setknobs;
-    struct {
+    struct { 
       double value;
     } focal;
   } op;
 };
+
+
 
 extern struct command op[MAX_COMMANDS];
 
 //Code generator headers
 int num_frames;
 char name[128];
+
 struct vary_node {
+  
   char name[128];
   double value;
   struct vary_node *next;
-} ** knobs;
-//struct vary_node ** knobs;
+};
+
 void print_knobs();
 void process_knobs();
 void first_pass();
 struct vary_node ** second_pass();
-void *draw_pass(void *line);
+
 void print_pcode();
 void my_main();
-
 #endif
+
+
+
+
+
