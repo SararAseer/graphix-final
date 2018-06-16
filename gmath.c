@@ -6,6 +6,11 @@
 #include "matrix.h"
 #include "ml6.h"
 
+#define  Pr  .299
+#define  Pg  .587
+#define  Pb  .114
+#define YOTE 0.0
+
 //lighting functions
 color get_lighting( double *normal, double *view, color alight, double light[2][3], double *areflect, double *dreflect, double *sreflect) {
   color a, d, s, i;
@@ -19,7 +24,18 @@ color get_lighting( double *normal, double *view, color alight, double light[2][
   i.green = a.green + d.green + s.green;
   i.blue = a.blue + d.blue + s.blue;
   limit_color(&i);
-  return i;
+  
+  double P = sqrt(i.red * i.red * Pr + i.green * i.green * Pg + i.blue * i.blue * Pb);
+  
+  i.red = P + (i.red - P) * YOTE;
+  i.green = P + (i.green - P) * YOTE;
+  i.blue = P + (i.blue - P) * YOTE;
+  
+  
+  
+  
+  
+  return i;  
 }
 
 color calculate_ambient(color alight, double *areflect ) {
