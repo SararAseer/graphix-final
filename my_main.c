@@ -305,6 +305,11 @@ void my_main() {
 
   //creating directory
   
+  
+  double change = 1.0;
+  
+  
+  
   struct stat st = {0};
   char* dir = "anim";
   if (stat(dir, &st) == -1)
@@ -316,6 +321,9 @@ void my_main() {
     double con;
     switch (op[i].opcode)
       {
+	  case SATURATION:
+		change = op[i].op.saturation.d[0];
+		break;
       case SPHERE:
         /* printf("Sphere: %6.2f %6.2f %6.2f r=%6.2f", */
         /* 	 op[i].op.sphere.d[0],op[i].op.sphere.d[1], */
@@ -335,7 +343,7 @@ void my_main() {
                    op[i].op.sphere.r, step_3d);
         matrix_mult( peek(systems), tmp );
         draw_polygons(tmp, t, zb, view, light, ambient,
-                      areflect, dreflect, sreflect);
+                      areflect, dreflect, sreflect, change);
         tmp->lastcol = 0;
         break;
       case TORUS:
@@ -358,7 +366,7 @@ void my_main() {
                   op[i].op.torus.r0,op[i].op.torus.r1, step_3d);
         matrix_mult( peek(systems), tmp );
         draw_polygons(tmp, t, zb, view, light, ambient,
-                      areflect, dreflect, sreflect);
+                      areflect, dreflect, sreflect, change);
         tmp->lastcol = 0;
         break;
       case BOX:
@@ -382,14 +390,14 @@ void my_main() {
                 op[i].op.box.d1[2]);
         matrix_mult( peek(systems), tmp );
         draw_polygons(tmp, t, zb, view, light, ambient,
-                      areflect, dreflect, sreflect);
+                      areflect, dreflect, sreflect, change);
         tmp->lastcol = 0;
         break;
 		    
       case TETRAHEDRON:
 	add_tetrahedron(tmp, op[i].op.tetrahedron.d[0], op[i].op.tetrahedron.d[1], op[i].op.tetrahedron.d[2], op[i].op.tetrahedron.s);
 	matrix_mult( peek(systems), tmp);
-	draw_polygons(tmp, t, zb, view, light, ambient, areflect, dreflect, sreflect);
+	draw_polygons(tmp, t, zb, view, light, ambient, areflect, dreflect, sreflect, change);
 	tmp->lastcol = 0;
 	break;
 	
@@ -397,14 +405,14 @@ void my_main() {
       case OCTAHEDRON:
 	add_octahedron(tmp, op[i].op.octahedron.d[0], op[i].op.octahedron.d[1], op[i].op.octahedron.d[2], op[i].op.octahedron.s);
 	matrix_mult( peek(systems), tmp);
-	draw_polygons(tmp, t, zb, view, light, ambient, areflect, dreflect, sreflect);
+	draw_polygons(tmp, t, zb, view, light, ambient, areflect, dreflect, sreflect, change);
 	tmp->lastcol = 0;
 	break;
 		 
       case SQUARE_PYRAMID:
 	add_squarepyramid(tmp, op[i].op.square_pyramid.d[0], op[i].op.square_pyramid.d[1], op[i].op.square_pyramid.d[2], op[i].op.square_pyramid.h, op[i].op.square_pyramid.s);
 	matrix_mult( peek(systems), tmp);
-	draw_polygons(tmp, t, zb, view, light, ambient, areflect, dreflect, sreflect);
+	draw_polygons(tmp, t, zb, view, light, ambient, areflect, dreflect, sreflect, change);
 	tmp->lastcol = 0;
 	break;	    
 		    

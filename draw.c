@@ -150,7 +150,8 @@ void draw_polygons(struct matrix *polygons, screen s, zbuffer zb,
                    double *view, double light[2][3], color ambient,
                    double *areflect,
                    double *dreflect,
-                   double *sreflect) {
+                   double *sreflect,
+				   double change) {
   if ( polygons->lastcol < 3 ) {
     printf("Need at least 3 points to draw a polygon!\n");
     return;
@@ -165,7 +166,7 @@ void draw_polygons(struct matrix *polygons, screen s, zbuffer zb,
 
     if ( dot_product(normal, view) > 0 ) {
 
-      color c = get_lighting(normal, view, ambient, light, areflect, dreflect, sreflect);
+      color c = get_lighting(normal, view, ambient, light, areflect, dreflect, sreflect, change);
 
       scanline_convert(polygons, point, s, zb, c);
 

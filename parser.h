@@ -25,6 +25,9 @@ struct command
     struct {
       double c[4];
     } ambient;
+	struct {
+		double d[2];
+	} saturation;
     struct {
       SYMTAB *p;
       /* each triple holds ka kd and ks for red green and blue

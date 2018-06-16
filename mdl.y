@@ -29,7 +29,7 @@
 %token <val> DOUBLE
 %token <string> LIGHT AMBIENT
 %token <string> CONSTANTS SAVE_COORDS CAMERA
-%token <string> SPHERE TORUS BOX TETRAHEDRON OCTAHEDRON SQUARE_PYRAMID LINE CS MESH TEXTURE
+%token <string> SPHERE TORUS BOX TETRAHEDRON OCTAHEDRON SQUARE_PYRAMID LINE CS MESH TEXTURE SATURATION
 %token <string> STRING
 %token <string> SET MOVE SCALE ROTATE BASENAME SAVE_KNOBS TWEEN FRAMES VARY
 %token <string> PUSH POP SAVE GENERATE_RAYFILES
@@ -56,6 +56,14 @@ TETRAHEDRON DOUBLE DOUBLE DOUBLE DOUBLE
   op[lastop].op.tetrahedron.d[3] = 0;
   op[lastop].op.tetrahedron.s = $5;
   lastop++;
+}|
+
+SATURATION DOUBLE{
+	lineno++;
+	op[lastop].opcode = SATURATION;
+	op[lastop].op.saturation.d[0] = $2;
+	op[lastop].op.saturation.d[1] = 0;
+	lastop++;
 }|
 
 SQUARE_PYRAMID DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE

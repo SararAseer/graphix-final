@@ -12,7 +12,7 @@
 #define YOTE 0.0
 
 //lighting functions
-color get_lighting( double *normal, double *view, color alight, double light[2][3], double *areflect, double *dreflect, double *sreflect) {
+color get_lighting( double *normal, double *view, color alight, double light[2][3], double *areflect, double *dreflect, double *sreflect, double change) {
   color a, d, s, i;
   normalize(normal);
   normalize(view);
@@ -27,13 +27,9 @@ color get_lighting( double *normal, double *view, color alight, double light[2][
   
   double P = sqrt(i.red * i.red * Pr + i.green * i.green * Pg + i.blue * i.blue * Pb);
   
-  i.red = P + (i.red - P) * YOTE;
-  i.green = P + (i.green - P) * YOTE;
-  i.blue = P + (i.blue - P) * YOTE;
-  
-  
-  
-  
+  i.red = P + (i.red - P) * change;
+  i.green = P + (i.green - P) * change;
+  i.blue = P + (i.blue - P) * change;
   
   return i;  
 }
