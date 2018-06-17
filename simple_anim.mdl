@@ -10,9 +10,9 @@ rotate z 360 spin1
 sphere 0 0 0 50
 scale 1 0.2 1
 torus 0 0 0 2 110
-rotate x 90 spin1
+rotate x 180 spin1
 torus 0 0 0 2 130
-rotate y 90 spin0
+rotate y 180 spin0
 torus 0 0 0 3 150
 sphere 0 0 0 100
 vary spin0 0 99 0 1
